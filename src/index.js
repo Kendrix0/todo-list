@@ -22,3 +22,66 @@ Things that are needed:
 
     All:        Load all categories. Ability to order page alphabetically or by # of projects?
 */
+
+class Library {
+    constructor() {
+        this.projects = []
+    }
+
+    addProject() {
+
+    }
+
+    findProject() {
+
+    }
+
+    removeProject() {
+
+    }
+}
+
+class Project {
+    constructor() {
+
+    }
+
+    createTask() {
+
+    }
+
+    findTask() {
+
+    }
+
+    removeTask() {
+
+    }
+
+    deleteProject() {
+
+    }
+
+    addCategory() {
+
+    }
+
+    removeCategory() {
+
+    }
+
+}
+
+class Task {
+    constructor() {
+
+    }
+
+    setPriority() {
+
+    }
+
+    deleteTask() {
+        
+    }
+}
