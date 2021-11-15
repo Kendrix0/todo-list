@@ -7,8 +7,9 @@
     <title>ToDo List</title>
 </head>
 
-<body class="has-background-white">
-    <div class="columns">
+<body class="has-background-white is-flex is-flex-direction-column">
+
+    <div class="columns is-flex-grow-0">
         <div class="column is-full has-background-primary">
             <section class="hero is-small">
                 <div class="hero-body">
@@ -22,44 +23,27 @@
             </section>
         </div>
     </div>
-    <div class="columns is-mobile">
-        <div class="column is-2 pl-6 has-background-white">
+
+    <div class="columns is-mobile is-flex-grow-1 is-flex">
+        <div class="column is-2 pl-6 has-background-white is-flex is-flex-direction-column">
+            <button class="button py-auto" id="addCatBtn">Add Category</button>
             <aside class="menu sticky">
-                <p class="menu-label">
-                    Example Category
-                </p>
-                <ul class="menu-list">
-                    <li><a>Project</a></li>
-                    <li><a>Project</a></li>
-                </ul>
-                <p class="menu-label">
-                    Example Category 2
-                </p>
-                <ul class="menu-list">
-                    <li><a>Project</a></li>
-                    <li><a>Project</a></li>
-                    <li><a>Project</a></li>
-                    <li><a>Project</a></li>
-                    <li><a>Project</a></li>
-                </ul>
-                <p class="menu-label">
-                    Example Category 3
-                </p>
-                <ul class="menu-list">
-                    <li><a>Project</a></li>
-                    <li><a>Project</a></li>
-                    <li><a>Project</a></li>
-                </ul>
+                <section class="my-2">
+                    <p class="menu-label">
+                        Example Category
+                    </p>
+                    <ul class="menu-list">
+                        <li><a>Project</a></li>
+                    </ul>
+                </section>
             </aside>
         </div>
 
-        <div style="display: flex;">
-            <div class="divider is-vertical is-left"></div>
-        </div>
+        <div style="display: flex;"><div class="divider is-vertical is-left"></div></div>
 
         <div class="column is-10 has-background-white py-6">
             <div class="container is-flex is-flex-wrap-wrap">
-                <div class="box mx-3">
+                <div class="box notification is-white mx-3">
                     <div class="content">
                         <p class="title">Tall tile</p>
                         <p class="subtitle">With even more content</p>
@@ -68,74 +52,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="box mx-3">
-                    <div class="content">
-                        <p class="title">Tall tile</p>
-                        <p class="subtitle">With even more content</p>
-                        <div class="content">
-                            <!-- Content -->
-                        </div>
-                    </div>
-                </div>
-                <div class="box mx-3">
-                    <div class="content">
-                        <p class="title">Tall tile</p>
-                        <p class="subtitle">With even more content</p>
-                        <div class="content">
-                            <!-- Content -->
-                        </div>
-                    </div>
-                </div>
-                <div class="box mx-3">
-                    <div class="content">
-                        <p class="title">Tall tile</p>
-                        <p class="subtitle">With even more content</p>
-                        <div class="content">
-                            <!-- Content -->
-                        </div>
-                    </div>
-                </div>
-                <div class="box mx-3">
-                    <div class="content">
-                        <p class="title">Tall tile</p>
-                        <p class="subtitle">With even more content</p>
-                        <div class="content">
-                            <!-- Content -->
-                        </div>
-                    </div>
-                </div>
-                <div class="box mx-3">
-                    <div class="content">
-                        <p class="title">Tall tile</p>
-                        <p class="subtitle">With even more content</p>
-                        <div class="content">
-                            <!-- Content -->
-                        </div>
-                    </div>
-                </div>
-                <div class="box mx-3">
-                    <div class="content">
-                        <p class="title">Tall tile</p>
-                        <p class="subtitle">With even more content</p>
-                        <div class="content">
-                            <!-- Content -->
-                        </div>
-                    </div>
-                </div>
-                <div class="box mx-3">
-                    <div class="content">
-                        <p class="title">Tall tile</p>
-                        <p class="subtitle">With even more content</p>
-                        <div class="content">
-                            <!-- Content -->
-                        </div>
-                    </div>
-                </div>
+
+
             </div>
         </div>
     </div>
 
-    <footer class="footer has-background-primary">
+    <footer class="footer has-background-primary is-flex-grow-0">
         <div class="content has-text-centered">
             <p>
                 <strong>Bulma</strong> by <a href="https://jgthms.com">Jeremy Thomas</a>. The source code is licensed
@@ -144,6 +67,8 @@
             </p>
         </div>
     </footer>
+
+
     <script src="main.js"></script>
 </body>
 
