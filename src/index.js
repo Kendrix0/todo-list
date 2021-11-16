@@ -25,11 +25,19 @@ Things that are needed:
 
 class Library {
     constructor() {
-        this.projects = []
+        this.projects = [];
     }
 
-    addProject() {
-
+    createProject(title, desc, categories, color = "white", priority = this.projects.length) {
+        let project = new Project(title, desc, color);
+        if (categories) {
+            categories.map(cat => project.addCategory(cat));
+        }
+        if (priority < this.projects.length) {
+            this.projects.splice(priority, 0, project);
+        } else {
+            this.projects.push(project);
+        }
     }
 
     findProject() {
@@ -42,46 +50,80 @@ class Library {
 }
 
 class Project {
-    constructor() {
-
+    constructor(title, desc, color) {
+        this.tasks = [];
+        this.categories = [];
+        this.title = title;
+        this.desc = desc;
+        this.color = color;
+        this.time = 0;
+        this.completed = false;
     }
 
-    createTask() {
-
+    addTask(title, desc, time = 0, priority = this.tasks.length) {
+        let task = new Task(title, desc, time);
+        if (priority < this.tasks.length) {
+            this.tasks.splice(priority, 0, task);
+        } else {
+            this.tasks.push(task);
+        }
+        this.time += task.time;
     }
 
     findTask() {
 
     }
 
-    removeTask() {
-
+    removeTask(priority) {
+        this.time -= this.tasks[priority].getTime();
+        this.tasks.splice(priority, 1);
     }
 
-    deleteProject() {
-
+    getTimeEstimate() {
+        return this.time;
     }
 
-    addCategory() {
-
+    completeProject() {
+        this.completed = !this.completed;
     }
 
-    removeCategory() {
+    addCategory(category) {
+        this.categories.push(category)
+    }
 
+    removeCategory(category) {
+        for (let i = 0; i < this.categories.length; i++) {
+            if (this.categories[i] == category) {
+                this.categories.splice(i,1);
+            }
+        }
     }
 
 }
 
 class Task {
-    constructor() {
+    constructor(title, desc, time) {
+        this.title = title;
+        this.desc = desc;
+        this.time = time;
+        this.completed = false;
+    }
+
+    changePriority() {
 
     }
 
-    setPriority() {
-
+    completeTask() {
+        this.completed = !this.completed;
     }
 
-    deleteTask() {
-        
+    getTime() {
+        return this.time;
     }
 }
+
+const library = new Library();
+library.createProject('Test','This is a test', []);
+library.projects[0].addCategory('TEST');
+library.projects[0].addTask('Test task', 'This is a test task', 1);
+console.log(library);
