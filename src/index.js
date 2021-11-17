@@ -1,4 +1,9 @@
 import './style.css';
+import { saveLocal, loadLocal, projectList } from './storage';
+
+
+let viewAllBtn = document.querySelector('#viewAllBtn');
+let addCatBtn = document.querySelector('#addCatBtn');
 
 /* Workflow:
 1.  Create project page where a single project is loaded on-screen. User should be able to expand
@@ -23,107 +28,12 @@ Things that are needed:
     All:        Load all categories. Ability to order page alphabetically or by # of projects?
 */
 
-class Library {
-    constructor() {
-        this.projects = [];
-    }
+projectList.createProject('Test', 'This is a test');
+projectList.projects[0].addCategory('TEST');
+projectList.projects[0].addTask('Test task', 'This is a test task', 1);
+console.log(projectList);
 
-    createProject(title, desc, categories, color = "white", priority = this.projects.length) {
-        let project = new Project(title, desc, color);
-        if (categories) {
-            categories.map(cat => project.addCategory(cat));
-        }
-        if (priority < this.projects.length) {
-            this.projects.splice(priority, 0, project);
-        } else {
-            this.projects.push(project);
-        }
-    }
 
-    findProject() {
+viewAllBtn.addEventListener('click', saveLocal());
 
-    }
-
-    removeProject() {
-
-    }
-}
-
-class Project {
-    constructor(title, desc, color) {
-        this.tasks = [];
-        this.categories = [];
-        this.title = title;
-        this.desc = desc;
-        this.color = color;
-        this.time = 0;
-        this.completed = false;
-    }
-
-    addTask(title, desc, time = 0, priority = this.tasks.length) {
-        let task = new Task(title, desc, time);
-        if (priority < this.tasks.length) {
-            this.tasks.splice(priority, 0, task);
-        } else {
-            this.tasks.push(task);
-        }
-        this.time += task.time;
-    }
-
-    findTask() {
-
-    }
-
-    removeTask(priority) {
-        this.time -= this.tasks[priority].getTime();
-        this.tasks.splice(priority, 1);
-    }
-
-    getTimeEstimate() {
-        return this.time;
-    }
-
-    completeProject() {
-        this.completed = !this.completed;
-    }
-
-    addCategory(category) {
-        this.categories.push(category)
-    }
-
-    removeCategory(category) {
-        for (let i = 0; i < this.categories.length; i++) {
-            if (this.categories[i] == category) {
-                this.categories.splice(i,1);
-            }
-        }
-    }
-
-}
-
-class Task {
-    constructor(title, desc, time) {
-        this.title = title;
-        this.desc = desc;
-        this.time = time;
-        this.completed = false;
-    }
-
-    changePriority() {
-
-    }
-
-    completeTask() {
-        this.completed = !this.completed;
-    }
-
-    getTime() {
-        return this.time;
-    }
-}
-
-const library = new Library();
-library.createProject('Test','This is a test', []);
-library.projects[0].addCategory('TEST');
-library.projects[0].addTask('Test task', 'This is a test task', 1);
-console.log(library);
+addCatBtn.addEventListener('click', loadLocal());
