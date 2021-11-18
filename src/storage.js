@@ -15,4 +15,5 @@ export function loadLocal() {
     } else {
         projectList.projects = []
     }
+    console.log(projectList.projects)
 }

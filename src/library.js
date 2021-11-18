@@ -1,4 +1,5 @@
 import Project from './project';
+import { saveLocal, loadLocal } from './storage';
 
 export default class Library {
     constructor() {
@@ -15,6 +16,7 @@ export default class Library {
         } else {
             this.projects.push(project);
         }
+        saveLocal();
     }
 
     findProject() {
