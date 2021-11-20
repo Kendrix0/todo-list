@@ -1,4 +1,5 @@
 import Task from './task';
+import { saveLocal } from './storage';
 
 export default class Project {
     constructor(title, desc, color, time, completed, tasks, categories) {
@@ -19,6 +20,7 @@ export default class Project {
             this.tasks.push(task);
         }
         this.time += task.time;
+        saveLocal();
     }
 
     findTask() {
@@ -28,6 +30,7 @@ export default class Project {
     removeTask(priority) {
         this.time -= this.tasks[priority].getTime();
         this.tasks.splice(priority, 1);
+        saveLocal();
     }
 
     getTimeEstimate() {
@@ -37,10 +40,14 @@ export default class Project {
 
     completeProject() {
         this.completed = !this.completed;
+        saveLocal();
     }
 
     addCategory(category) {
-        this.categories.push(category)
+        if (!this.categories.includes(category)) {
+            this.categories.push(category);
+        }
+        saveLocal();
     }
 
     removeCategory(category) {
@@ -49,6 +56,7 @@ export default class Project {
                 this.categories.splice(i, 1);
             }
         }
+        saveLocal();
     }
 
 }

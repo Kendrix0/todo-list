@@ -1,5 +1,5 @@
 import Project from './project';
-import { saveLocal, loadLocal } from './storage';
+import { saveLocal } from './storage';
 
 export default class Library {
     constructor() {
