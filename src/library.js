@@ -4,6 +4,7 @@ import { saveLocal } from './storage';
 export default class Library {
     constructor() {
         this.projects = [];
+        this.allCategories = [];
     }
 
     createProject(title, desc, color = "white", time = 0, completed = false, tasks = [], categories = [], priority = this.projects.length) {

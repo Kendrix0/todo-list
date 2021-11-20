@@ -16,21 +16,25 @@ function focusOneProject(project) {
     let contentContainer = document.createElement('div');
     let displayTitle = document.createElement('p');
     let displayDesc = document.createElement('p');
+    let displayCategories = document.createElement('div');
     let projectTasks = displayTasks(project)
 
     displayContainer.classList.add('tile', 'box', `is-${project.color}`, 'is-vertical');
     contentContainer.classList.add('content');
     displayTitle.classList.add('title');
     displayDesc.classList.add('subtitle');
+    displayCategories.classList.add('subtitle');
 
     displayTitle.textContent = project.title;
     displayTitle.onclick = () => {
         focusOneProject(project)
     }
     displayDesc.textContent = project.desc;
+    displayCategories.textContent = `Categories: ${project.categories}`
 
     contentContainer.appendChild(displayTitle);
     contentContainer.appendChild(displayDesc);
+    contentContainer.appendChild(displayCategories);
     contentContainer.appendChild(projectTasks);
     displayContainer.appendChild(contentContainer);
     projectsDisplay.appendChild(displayContainer);
@@ -108,11 +112,12 @@ function displayProjects(list) {
 }
 
 function loadSidebar() {
-    
+
 }
-/* projectList.createProject('Test2', 'This is a test2');
-projectList.projects[1].addCategory('TEST2');
-projectList.projects[1].addTask('Test task3', 'This is a test task3', 1); */
+/* projectList.createProject('Test3', 'This is a test3');
+projectList.projects[1].addCategory('TEST3');
+projectList.projects[2].addCategory('TEST3');
+projectList.projects[2].addTask('Test task', 'This is a test task', 1); */
 console.log(projectList.projects);
 
 function renderSite() {

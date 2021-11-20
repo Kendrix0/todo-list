@@ -1,5 +1,7 @@
 import Task from './task';
-import { saveLocal } from './storage';
+import { saveLocal, categoryList } from './storage';
+import Library from './library';
+import Categories from './categories';
 
 export default class Project {
     constructor(title, desc, color, time, completed, tasks, categories) {
@@ -47,6 +49,7 @@ export default class Project {
         if (!this.categories.includes(category)) {
             this.categories.push(category);
         }
+        categoryList.addCategory(category);
         saveLocal();
     }
 
