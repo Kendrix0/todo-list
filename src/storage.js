@@ -14,7 +14,7 @@ export function saveLocal() {
 export function loadLocal() {
     const projects = JSON.parse(localData.getItem('projectList'));
     if (projects) {
-        projectList.projects = projects.map(project => new Project(project.title, project.desc, project.color, project.time, project.completed, project.tasks, project.categories))
+        projectList.projects = projects.map(project => new Project(project.title, project.desc, project.color, project.categories, project.time, project.completed, project.tasks))
     } else {
         projectList.projects = []
     };
@@ -23,4 +23,6 @@ export function loadLocal() {
     if (categories) {
         categoryList.categories = categories.map(category => category)
     }
+    console.log(projectList.projects);
+    console.log(categoryList.categories);
 }

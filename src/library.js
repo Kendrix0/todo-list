@@ -7,8 +7,8 @@ export default class Library {
         this.allCategories = [];
     }
 
-    createProject(title, desc, color = "white", time = 0, completed = false, tasks = [], categories = [], priority = this.projects.length) {
-        let project = new Project(title, desc, color, time, completed, tasks, categories);
+    createProject(title, desc, color = "white", categories = [], priority = this.projects.length, time = 0, completed = false, tasks = []) {
+        let project = new Project(title, desc, color, categories, time, completed, tasks);
         if (categories) {
             categories.map(cat => project.addCategory(cat));
         }

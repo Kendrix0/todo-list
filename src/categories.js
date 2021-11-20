@@ -7,7 +7,6 @@ export default class Categories {
         if (!this.categories.includes(category)) {
             this.categories.push(category);
         }
-        console.log(this.categories)
     };
 
     removeCategory(category) {

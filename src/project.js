@@ -4,7 +4,7 @@ import Library from './library';
 import Categories from './categories';
 
 export default class Project {
-    constructor(title, desc, color, time, completed, tasks, categories) {
+    constructor(title, desc, color, categories, time, completed, tasks) {
         this.title = title;
         this.desc = desc;
         this.color = color;
