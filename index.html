@@ -13,53 +13,55 @@
         <div class="modal-content">
             <div class="box">
                 <div class="field">
-                    <label class="label">Name</label>
+                    <label class="label">Project title</label>
                     <div class="control">
-                        <input class="input" type="text" placeholder="Text input">
+                        <input class="input" type="text" placeholder="Title" id="projectFormTitle">
                     </div>
                 </div>
 
                 <div class="field">
-                    <label class="label">Username</label>
-                    <div class="control has-icons-left has-icons-right">
-                        <input class="input is-success" type="text" placeholder="Text input" value="bulma">
-                        <span class="icon is-small is-left">
-                            <i class="fas fa-user"></i>
-                        </span>
-                        <span class="icon is-small is-right">
-                            <i class="fas fa-check"></i>
-                        </span>
+                    <label class="label">Description</label>
+                    <div class="control">
+                        <textarea class="textarea" id="projectFormDesc"></textarea>
                     </div>
-                    <p class="help is-success">This username is available</p>
                 </div>
 
-
-
-                <div class="field">
-                    <label class="label">Subject</label>
-                    <div class="control">
-                        <div class="select">
-                            <select>
-                                <option>Select dropdown</option>
-                                <option>With options</option>
-                            </select>
+                <div class="columns">
+                    <div class="column is-3">
+                        <div class="field">
+                            <label class="label">Color <span class="subtitle is-6">(Optional)</span></label>
+                            <div class="control">
+                                <div class="select">
+                                    <select id="projectFormColor">
+                                        <option value="white">White</option>
+                                        <option value="dark">Dark</option>
+                                        <option value="info">Blue</option>
+                                        <option value="primary">Green</option>
+                                        <option value="warning">Yellow</option>
+                                        <option value="danger">Red</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="field">
-                    <label class="label">Message</label>
-                    <div class="control">
-                        <textarea class="textarea" placeholder="Textarea"></textarea>
+                    <div class="column is-8">
+                        <div class="field">
+                            <label class="label">Categories <span class="subtitle is-6">(Optional, separated by
+                                    space)</span></label>
+                            <div class="control">
+                                <input class="input" type="text" placeholder="Categories" id="projectFormCategories">
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="field is-grouped">
                     <div class="control">
-                        <button class="button is-link">Submit</button>
+                        <button class="button is-link" id="submitProjectForm">Submit</button>
                     </div>
                     <div class="control">
-                        <button class="button is-link is-light">Cancel</button>
+                        <button class="button is-link is-light" id="cancelProjectForm">Cancel</button>
                     </div>
                 </div>
             </div>
@@ -104,17 +106,7 @@
         </div>
 
         <div class="column is-10 py-6">
-            <div class="container is-flex is-flex-wrap-wrap" id="projectsDisplay">
-<!--                 <div class="box notification is-white mx-3">
-                    <div class="content">
-                        <p class="title">Tall tile</p>
-                        <p class="subtitle">With even more content</p>
-                        <div class="content">
-                        </div>
-                    </div>
-                </div> -->
-
-            </div>
+            <div class="container is-flex is-flex-wrap-wrap" id="projectsDisplay"></div>
         </div>
     </div>
 
