@@ -34,36 +34,50 @@ function createDisplay(projects, single) {
     let displayTitle = document.createElement('p');
     let displayDesc = document.createElement('p');
     let projectTasks = displayTasks(projects)
+    let deleteBtn = document.createElement('button');
 
     displayContainer.classList.add('box', 'notification', `is-${projects.color}`, 'is-vertical');
     contentContainer.classList.add('content');
     displayTitle.classList.add('title');
     displayDesc.classList.add('subtitle');
+    deleteBtn.classList.add('delete');
 
+    deleteBtn.onclick = () => {
+        projectList.removeProject(projects);
+        saveLocal();
+        projectsDisplay.removeChild(displayContainer);
+    }
 
     displayTitle.textContent = projects.title;
     displayTitle.onclick = () => {
         focusOneProject(projects)
     }
+
     displayDesc.textContent = projects.desc;
 
     contentContainer.appendChild(displayTitle);
     contentContainer.appendChild(displayDesc);
+
     if (single) {
         displayContainer.classList.add('tile');
-        
+        displayContainer.id = "largeDisplay"
         let displayCategories = document.createElement('div');
         displayCategories.classList.add('subtitle');
         displayCategories.textContent = `Categories: ${projects.categories}`
         contentContainer.appendChild(displayCategories);
+        projectTasks.id = "largeTaskContainer"
 
     } else {
         displayContainer.classList.add('mx-3');
+        displayContainer.id = "smallDisplay";
+        projectTasks.id = "smallTaskContainer"
         displayTitle.classList.add('projectTitle');
         
     }
+
     contentContainer.appendChild(projectTasks);
     displayContainer.appendChild(contentContainer);
+    displayContainer.appendChild(deleteBtn);
     projectsDisplay.appendChild(displayContainer);
 }
 
@@ -126,12 +140,6 @@ function loadSidebar() {
 
 }
 
-/* projectList.createProject('Test3', 'This is a test3');
-projectList.projects[1].addCategory('TEST3');
-projectList.projects[2].addCategory('TEST3');
-projectList.projects[2].addTask('Test task', 'This is a test task', 1);
-console.log(projectList.projects); */
-
 function renderSite() {
     loadLocal();
     loadSidebar();
@@ -148,18 +156,26 @@ viewAllBtn.onclick = () => {
 }
 
 addCatBtn.addEventListener('click', toggleProjectForm);
+
 closeModalBtn.onclick = () => {toggleProjectForm()};
+
 cancelFormBtn.onclick = () => {clearProjectForm(); toggleProjectForm()};
+
 submitFormBtn.onclick = () => {
     projectList.createProject(projectFormTitle.value,projectFormDesc.value, projectFormColor.value, projectFormCategories.value.split(' '));
     displayProjects(projectList.projects);
     clearProjectForm();
     toggleProjectForm()
 };
+
 renderSite();
+
+
 
 let testCategory = document.querySelector('.menu-label');
 testCategory.onclick = () => {
     displayCategory('test2');
-
 }
+
+// Work on sidebar (displaying categories and corresponding projects, ability to click on category, ability to click on projects, ability to remove category, ability to remove project from category & vice-versa)
+// Work on tasks (creating tasks from project page, expanding tasks in project page for more detail(also button to edit))

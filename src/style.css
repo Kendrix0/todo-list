@@ -1,5 +1,15 @@
 body {
     height: 100vh;
+    overflow: scroll;
+}
+
+#displayContainer {
+    height: 65vh;
+    overflow: auto;
+}
+
+#projectDisplay {
+    overflow: auto;
 }
 
 .sticky {
@@ -9,9 +19,34 @@ body {
 }
 
 .box {
-    border: 1px solid rgba(169, 169, 169, 0.25);
+    border: 1px solid rgba(169, 169, 169, 0.25)
 }
 
+#largeDisplay {
+    height: 100%;
+    width: 100%;
+}
+
+#smallDisplay {
+    min-width: 15rem;
+    min-height: 15rem;
+    width: 25%;
+    height: 25%;
+    padding-bottom: 0px;
+    padding-right: 5px;
+}
+
+#largeTaskContainer {
+    width: 100%;
+    height: 17em;
+    overflow: auto;
+}
+
+#smallTaskContainer {
+    width: 100%;
+    height: 7.5em;
+    overflow: auto;
+}
 
 .projectTitle:hover, .menu-label:hover {
     cursor: pointer;
