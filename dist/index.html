@@ -87,10 +87,19 @@
     <div class="columns is-mobile is-flex-grow-1 is-flex">
         <div class="column is-2 pl-6 is-flex is-flex-direction-column">
             <button class="button mb-3 is-link is-light is-outlined" id="viewAllBtn">View All</button>
-            <button class="button mb-3 is-primary is-light is-outlined" id="addCatBtn" data-target="modal">
+            <button class="button mb-3 is-primary is-light is-outlined" id="createProjectBtn" data-target="modal">
                 Create Project
             </button>
-
+            <button class="button mb-3 is-warning is-light is-outlined" id="addCatBtn" data-target="modal">
+                Add Category
+            </button>
+            <div id="inputField" class="hidden">
+                <input type="text" id="categoryInput">
+                <div class="buttons has-addons">
+                    <button class="button is-small is-primary" id="submitCategoryBtn">✔</button>
+                    <button class="button is-small is-danger" id="cancelCategoryBtn">✘</button>
+                </div>
+            </div>
             <aside class="menu sticky" id="sideNav">
             </aside>
         </div>

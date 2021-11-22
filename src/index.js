@@ -4,11 +4,16 @@ import Project from './project';
 import Task from './task';
 
 const viewAllBtn = document.querySelector('#viewAllBtn');
+const createProjectBtn = document.querySelector('#createProjectBtn');
 const addCatBtn = document.querySelector('#addCatBtn');
 const modal = document.querySelector('.modal');
 const closeModalBtn = document.querySelector('.modal-close');
 const projectsDisplay = document.querySelector('#projectsDisplay');
 const sideNav = document.querySelector('#sideNav');
+const categoryInputField = document.querySelector('#inputField');
+const categoryInput = document.querySelector('#categoryInput');
+const submitCategoryBtn = document.querySelector('#submitCategoryBtn');
+const cancelCategoryBtn = document.querySelector('#cancelCategoryBtn');
 
 
 const projectFormTitle = document.querySelector('#projectFormTitle');
@@ -31,7 +36,7 @@ function formatCategories(categories) {
 
 function submitProjectForm() {
     projectList.createProject(projectFormTitle.value, projectFormDesc.value, projectFormColor.value, formatCategories(projectFormCategories));
-    displayProjects(projectList.projects);
+    displayMultipleProjects(projectList.projects);
     clearProjectForm();
     toggleProjectForm();
 }
@@ -43,24 +48,43 @@ function clearProjectForm() {
     projectFormCategories.value = '';
 }
 
+function clearDisplay() {
+    displayContainer.innerHTML = '';
+    displayContainer.appendChild(projectsDisplay);
+    projectsDisplay.innerHTML = '';
+}
+
+function deleteProject(projects, projectContainer) {
+    projectList.removeProject(projects);
+    saveLocal();
+    projectsDisplay.removeChild(projectContainer);
+}
+
+function deleteCategory(category) {
+    categoryList.removeCategory(category);
+    for (let i = 0; i < projectList.projects.length; i++) {
+        if (projectList.projects[i].categories.includes(category)) {
+            projectList.projects[i].removeCategory(category)
+        }
+    }
+}
+
 function createDisplay(projects, single) {
-    let displayContainer = document.createElement('div');
+    let projectContainer = document.createElement('div');
     let contentContainer = document.createElement('div');
     let displayTitle = document.createElement('p');
-    let displayDesc = document.createElement('p');
     let projectTasks = displayTasks(projects)
-    let deleteBtn = document.createElement('button');
+    let deleteProjectBtn = document.createElement('button');
 
-    displayContainer.classList.add('box', 'notification', `is-${projects.color}`, 'is-vertical');
+    projectContainer.classList.add('box', 'notification', `is-${projects.color}`, 'is-vertical');
     contentContainer.classList.add('content');
     displayTitle.classList.add('title');
-    displayDesc.classList.add('subtitle');
-    deleteBtn.classList.add('delete');
 
-    deleteBtn.onclick = () => {
-        projectList.removeProject(projects);
-        saveLocal();
-        projectsDisplay.removeChild(displayContainer);
+    deleteProjectBtn.classList.add('delete');
+
+    deleteProjectBtn.onclick = () => {
+        deleteProject(projects, projectContainer);
+        loadSideNav();
     }
 
     displayTitle.textContent = projects.title;
@@ -68,40 +92,44 @@ function createDisplay(projects, single) {
         focusOneProject(projects)
     }
 
-    displayDesc.textContent = projects.desc;
-
     contentContainer.appendChild(displayTitle);
-    contentContainer.appendChild(displayDesc);
 
     if (single) {
-        displayContainer.classList.add('tile');
-        displayContainer.id = "largeDisplay"
+        projectContainer.classList.add('tile');
+        projectContainer.id = "largeDisplay"
         let displayCategories = document.createElement('div');
+
         displayCategories.classList.add('subtitle');
-        if (projects.categories != []) {
+        if (projects.categories.length > 0) {
             displayCategories.textContent = `Categories: ${projects.categories}`
         } else {
-            displayCategories.textContent = `Categories: None`
+            displayCategories.textContent = ''
         }
+
+        let displayDesc = document.createElement('p');
+        displayDesc.textContent = projects.desc;
+        displayDesc.classList.add('subtitle');
+
+        contentContainer.appendChild(displayDesc);
         contentContainer.appendChild(displayCategories);
         projectTasks.id = "largeTaskContainer"
 
     } else {
-        displayContainer.classList.add('mx-3');
-        displayContainer.id = "smallDisplay";
+        projectContainer.classList.add('mx-3');
+        projectContainer.id = "smallDisplay";
         projectTasks.id = "smallTaskContainer"
         displayTitle.classList.add('projectTitle');
 
     }
 
     contentContainer.appendChild(projectTasks);
-    displayContainer.appendChild(contentContainer);
-    displayContainer.appendChild(deleteBtn);
-    projectsDisplay.appendChild(displayContainer);
+    projectContainer.appendChild(contentContainer);
+    projectContainer.appendChild(deleteProjectBtn);
+    projectsDisplay.appendChild(projectContainer);
 }
 
 function focusOneProject(project) {
-    projectsDisplay.innerHTML = '';
+    clearDisplay();
     createDisplay(project, true);
 }
 
@@ -112,7 +140,11 @@ function displayCategory(category) {
             categoryProjects.push(projectList.projects[i])
         }
     }
-    displayProjects(categoryProjects);
+    let categoryTitle = document.createElement('p');
+    categoryTitle.classList.add('title', 'is-1');
+    categoryTitle.textContent = category;
+    displayMultipleProjects(categoryProjects);
+    displayContainer.prepend(categoryTitle, projectsDisplay);
 }
 
 function displayTasks(project) {
@@ -148,8 +180,8 @@ function displayTasks(project) {
     return displayContent;
 }
 
-function displayProjects(list) {
-    projectsDisplay.innerHTML = '';
+function displayMultipleProjects(list) {
+    clearDisplay();
     for (let i = 0; i < list.length; i++) {
         createDisplay(list[i], false)
     }
@@ -164,8 +196,8 @@ function createSideNavProjectLinks(projects, categories, i, parent) {
 
             projectLinkUl.classList.add('menu-list');
             projectLink.classList.add('my-0');
-            projectLink.onclick = () => {focusOneProject(projects[j])}
-            projectLink.textContent = projects[j].title;
+            projectLink.onclick = () => { focusOneProject(projects[j]) }
+            projectLink.textContent = `·${projects[j].title}`;
             projectLinkLi.appendChild(projectLink);
             projectLinkUl.appendChild(projectLinkLi);
             parent.appendChild(projectLinkUl);
@@ -174,17 +206,31 @@ function createSideNavProjectLinks(projects, categories, i, parent) {
 }
 
 function loadSideNav() {
+    sideNav.innerHTML = '';
     for (let i = 0; i < categoryList.categories.length; i++) {
-        const categorySection = document.createElement('section');
-        const categoryLabel = document.createElement('p');
+        let categorySection = document.createElement('section');
+        let categoryLabel = document.createElement('p');
+        let deleteBtn = document.createElement('button');
+        let categorySpan = document.createElement('span');
 
-        categorySection.classList.add('mb-2');
-        categoryLabel.textContent = categoryList.categories[i];
-        categoryLabel.classList.add('menu-label', 'mb-0');
-        categoryLabel.onclick = () => {
+        deleteBtn.classList.add('delete', 'is-small', 'hidden');
+        function toggleBtn() { deleteBtn.classList.toggle('hidden') };
+        deleteBtn.onclick = () => { deleteCategory(categoryList.categories[i]), loadSideNav() }
+
+        categorySpan.textContent = categoryList.categories[i];
+        categorySpan.onclick = () => {
             displayCategory(categoryList.categories[i]);
         }
+
+        categoryLabel.classList.add('menu-label', 'mb-0');
+        categoryLabel.appendChild(categorySpan);
+        categoryLabel.appendChild(deleteBtn);
+
+        categorySection.classList.add('mb-2');
+        categorySection.addEventListener('mouseover', toggleBtn);
+        categorySection.addEventListener('mouseout', toggleBtn);
         categorySection.appendChild(categoryLabel);
+        categoryLabel.appendChild(deleteBtn);
         createSideNavProjectLinks(projectList.projects, categoryList.categories, i, categorySection)
         sideNav.appendChild(categorySection);
     }
@@ -193,25 +239,39 @@ function loadSideNav() {
 function renderSite() {
     loadLocal();
     loadSideNav();
-    displayProjects(projectList.projects);
+    displayMultipleProjects(projectList.projects);
 }
 
 function toggleProjectForm() {
     modal.classList.toggle('is-active')
 }
 
-viewAllBtn.onclick = () => {
-    projectsDisplay.innerHTML = '';
-    displayProjects(projectList.projects);
+function toggleCategoryInput() {
+    categoryInput.value = '';
+    categoryInputField.classList.toggle('hidden');
 }
 
-addCatBtn.addEventListener('click', toggleProjectForm);
+viewAllBtn.onclick = () => {
+    displayMultipleProjects(projectList.projects);
+}
+
+createProjectBtn.addEventListener('click', toggleProjectForm);
+
+addCatBtn.onclick = () => { toggleCategoryInput() };
+
+submitCategoryBtn.onclick = () => {
+    categoryList.addCategory(categoryInput.value);
+    toggleCategoryInput();
+    loadSideNav();
+}
+
+cancelCategoryBtn.onclick = () => { toggleCategoryInput() }
 
 closeModalBtn.onclick = () => { toggleProjectForm() };
 
 cancelFormBtn.onclick = () => { clearProjectForm(); toggleProjectForm() };
 
-submitFormBtn.onclick = () => { submitProjectForm() };
+submitFormBtn.onclick = () => { submitProjectForm(), loadSideNav() };
 
 renderSite();
 

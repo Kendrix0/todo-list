@@ -1,3 +1,5 @@
+import { saveLocal } from "./storage";
+
 export default class Categories {
     constructor() {
         this.categories = []
@@ -15,5 +17,6 @@ export default class Categories {
                 this.categories.splice(i, 1)
             }
         }
+        saveLocal();
     };
 }

@@ -25,10 +25,6 @@ export default class Project {
         saveLocal();
     }
 
-    findTask() {
-
-    }
-
     removeTask(priority) {
         this.time -= this.tasks[priority].getTime();
         this.tasks.splice(priority, 1);
