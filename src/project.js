@@ -46,6 +46,9 @@ export default class Project {
     }
 
     addCategory(category) {
+        if (category == '') {
+            return;
+        }
         if (!this.categories.includes(category)) {
             this.categories.push(category);
         }

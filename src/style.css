@@ -53,5 +53,9 @@ body {
     color: gray;
 }
 
+.menu-list a {
+    padding: 0.1em 0.75em;
+}
+
 @import "~@creativebulma/bulma-divider";
 @import "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"

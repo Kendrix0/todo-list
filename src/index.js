@@ -1,5 +1,5 @@
 import './style.css';
-import { saveLocal, loadLocal, projectList } from './storage';
+import { saveLocal, loadLocal, projectList, categoryList } from './storage';
 import Project from './project';
 import Task from './task';
 
@@ -8,6 +8,8 @@ const addCatBtn = document.querySelector('#addCatBtn');
 const modal = document.querySelector('.modal');
 const closeModalBtn = document.querySelector('.modal-close');
 const projectsDisplay = document.querySelector('#projectsDisplay');
+const sideNav = document.querySelector('#sideNav');
+
 
 const projectFormTitle = document.querySelector('#projectFormTitle');
 const projectFormDesc = document.querySelector('#projectFormDesc');
@@ -16,9 +18,22 @@ const projectFormCategories = document.querySelector('#projectFormCategories');
 const submitFormBtn = document.querySelector('#submitProjectForm');
 const cancelFormBtn = document.querySelector('#cancelProjectForm');
 
+function formatCategories(categories) {
+    let filteredCategories = []
+    let splitValues = categories.value.split(' ');
+    for (let i = 0; i < splitValues.length; i++) {
+        if (splitValues[i] != '') {
+            filteredCategories.push(splitValues[i].toLowerCase())
+        }
+    }
+    return filteredCategories
+}
 
 function submitProjectForm() {
-
+    projectList.createProject(projectFormTitle.value, projectFormDesc.value, projectFormColor.value, formatCategories(projectFormCategories));
+    displayProjects(projectList.projects);
+    clearProjectForm();
+    toggleProjectForm();
 }
 
 function clearProjectForm() {
@@ -63,7 +78,11 @@ function createDisplay(projects, single) {
         displayContainer.id = "largeDisplay"
         let displayCategories = document.createElement('div');
         displayCategories.classList.add('subtitle');
-        displayCategories.textContent = `Categories: ${projects.categories}`
+        if (projects.categories != []) {
+            displayCategories.textContent = `Categories: ${projects.categories}`
+        } else {
+            displayCategories.textContent = `Categories: None`
+        }
         contentContainer.appendChild(displayCategories);
         projectTasks.id = "largeTaskContainer"
 
@@ -72,7 +91,7 @@ function createDisplay(projects, single) {
         displayContainer.id = "smallDisplay";
         projectTasks.id = "smallTaskContainer"
         displayTitle.classList.add('projectTitle');
-        
+
     }
 
     contentContainer.appendChild(projectTasks);
@@ -136,13 +155,44 @@ function displayProjects(list) {
     }
 }
 
-function loadSidebar() {
+function createSideNavProjectLinks(projects, categories, i, parent) {
+    for (let j = 0; j < projects.length; j++) {
+        if (projects[j].categories.includes(categories[i])) {
+            let projectLinkUl = document.createElement('ul');
+            let projectLinkLi = document.createElement('li');
+            let projectLink = document.createElement('a');
 
+            projectLinkUl.classList.add('menu-list');
+            projectLink.classList.add('my-0');
+            projectLink.onclick = () => {focusOneProject(projects[j])}
+            projectLink.textContent = projects[j].title;
+            projectLinkLi.appendChild(projectLink);
+            projectLinkUl.appendChild(projectLinkLi);
+            parent.appendChild(projectLinkUl);
+        }
+    }
+}
+
+function loadSideNav() {
+    for (let i = 0; i < categoryList.categories.length; i++) {
+        const categorySection = document.createElement('section');
+        const categoryLabel = document.createElement('p');
+
+        categorySection.classList.add('mb-2');
+        categoryLabel.textContent = categoryList.categories[i];
+        categoryLabel.classList.add('menu-label', 'mb-0');
+        categoryLabel.onclick = () => {
+            displayCategory(categoryList.categories[i]);
+        }
+        categorySection.appendChild(categoryLabel);
+        createSideNavProjectLinks(projectList.projects, categoryList.categories, i, categorySection)
+        sideNav.appendChild(categorySection);
+    }
 }
 
 function renderSite() {
     loadLocal();
-    loadSidebar();
+    loadSideNav();
     displayProjects(projectList.projects);
 }
 
@@ -157,25 +207,14 @@ viewAllBtn.onclick = () => {
 
 addCatBtn.addEventListener('click', toggleProjectForm);
 
-closeModalBtn.onclick = () => {toggleProjectForm()};
+closeModalBtn.onclick = () => { toggleProjectForm() };
 
-cancelFormBtn.onclick = () => {clearProjectForm(); toggleProjectForm()};
+cancelFormBtn.onclick = () => { clearProjectForm(); toggleProjectForm() };
 
-submitFormBtn.onclick = () => {
-    projectList.createProject(projectFormTitle.value,projectFormDesc.value, projectFormColor.value, projectFormCategories.value.split(' '));
-    displayProjects(projectList.projects);
-    clearProjectForm();
-    toggleProjectForm()
-};
+submitFormBtn.onclick = () => { submitProjectForm() };
 
 renderSite();
 
-
-
-let testCategory = document.querySelector('.menu-label');
-testCategory.onclick = () => {
-    displayCategory('test2');
-}
 
 // Work on sidebar (displaying categories and corresponding projects, ability to click on category, ability to click on projects, ability to remove category, ability to remove project from category & vice-versa)
 // Work on tasks (creating tasks from project page, expanding tasks in project page for more detail(also button to edit))
