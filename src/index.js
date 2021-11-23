@@ -263,6 +263,7 @@ submitCategoryBtn.onclick = () => {
     categoryList.addCategory(categoryInput.value);
     toggleCategoryInput();
     loadSideNav();
+    saveLocal();
 }
 
 cancelCategoryBtn.onclick = () => { toggleCategoryInput() }
