@@ -75,12 +75,17 @@ function createDisplay(projects, single) {
     let displayTitle = document.createElement('p');
     let projectTasks = displayTasks(projects)
     let deleteProjectBtn = document.createElement('button');
+    let addTaskBtn = document.createElement('button');
+    let editProjectBtn = document.createElement('button');
+    let bottomBtnContainer = document.createElement('div');
 
     projectContainer.classList.add('box', 'notification', `is-${projects.color}`, 'is-vertical');
     contentContainer.classList.add('content');
     displayTitle.classList.add('title');
-
+    addTaskBtn.classList.add('button', 'is-primary', 'is-outlined', 'is-light');
+    editProjectBtn.classList.add('button', 'is-info', 'is-outlined', 'is-light');
     deleteProjectBtn.classList.add('delete');
+    bottomBtnContainer.classList.add('field', 'is-grouped', 'is-flex', 'is-justify-content-space-around');
 
     deleteProjectBtn.onclick = () => {
         deleteProject(projects, projectContainer);
@@ -94,6 +99,8 @@ function createDisplay(projects, single) {
 
     contentContainer.appendChild(displayTitle);
 
+    addTaskBtn.textContent = 'Add Task';
+    editProjectBtn.textContent = 'Edit';
     if (single) {
         projectContainer.classList.add('tile');
         projectContainer.id = "largeDisplay"
@@ -112,7 +119,7 @@ function createDisplay(projects, single) {
 
         contentContainer.appendChild(displayDesc);
         contentContainer.appendChild(displayCategories);
-        projectTasks.id = "largeTaskContainer"
+        projectTasks.id = "largeTaskContainer";
 
     } else {
         projectContainer.classList.add('mx-3');
@@ -123,8 +130,11 @@ function createDisplay(projects, single) {
     }
 
     contentContainer.appendChild(projectTasks);
+    bottomBtnContainer.appendChild(addTaskBtn);
+    bottomBtnContainer.appendChild(editProjectBtn);
     projectContainer.appendChild(contentContainer);
     projectContainer.appendChild(deleteProjectBtn);
+    projectContainer.appendChild(bottomBtnContainer);
     projectsDisplay.appendChild(projectContainer);
 }
 
@@ -222,7 +232,7 @@ function loadSideNav() {
             displayCategory(categoryList.categories[i]);
         }
 
-        categoryLabel.classList.add('menu-label', 'mb-0');
+        categoryLabel.classList.add('menu-label', 'mb-0', 'is-flex', 'is-justify-content-space-between');
         categoryLabel.appendChild(categorySpan);
         categoryLabel.appendChild(deleteBtn);
 
@@ -276,6 +286,4 @@ submitFormBtn.onclick = () => { submitProjectForm(), loadSideNav() };
 
 renderSite();
 
-
-// Work on sidebar (displaying categories and corresponding projects, ability to click on category, ability to click on projects, ability to remove category, ability to remove project from category & vice-versa)
 // Work on tasks (creating tasks from project page, expanding tasks in project page for more detail(also button to edit))
