@@ -1,7 +1,43 @@
 import Task from './task';
-import { saveLocal, categoryList } from './storage';
+import { saveLocal, projectList, categoryList } from './storage';
+import { displayMultipleProjects } from './display';
 import Library from './library';
 import Categories from './categories';
+
+const modal = document.querySelector('.modal');
+const projectFormTitle = document.querySelector('#projectFormTitle');
+const projectFormDesc = document.querySelector('#projectFormDesc');
+const projectFormColor = document.querySelector('#projectFormColor');
+const projectFormCategories = document.querySelector('#projectFormCategories');
+
+function formatCategories(categories) {
+    let filteredCategories = []
+    let splitValues = categories.value.split(' ');
+    for (let i = 0; i < splitValues.length; i++) {
+        if (splitValues[i] != '') {
+            filteredCategories.push(splitValues[i].toLowerCase())
+        }
+    }
+    return filteredCategories
+}
+
+export function clearProjectForm() {
+    projectFormTitle.value = '';
+    projectFormDesc.value = '';
+    projectFormColor.value = "white";
+    projectFormCategories.value = '';
+}
+
+export function toggleProjectForm() {
+    modal.classList.toggle('is-active')
+}
+
+export function submitProjectForm() {
+    projectList.createProject(projectFormTitle.value, projectFormDesc.value, projectFormColor.value, formatCategories(projectFormCategories));
+    displayMultipleProjects(projectList.projects);
+    clearProjectForm();
+    toggleProjectForm();
+}
 
 export default class Project {
     constructor(title, desc, color, categories, time, completed, tasks) {
@@ -26,7 +62,7 @@ export default class Project {
     }
 
     removeTask(priority) {
-        this.time -= this.tasks[priority].getTime();
+        this.time -= this.tasks[priority].time;
         this.tasks.splice(priority, 1);
         saveLocal();
     }
