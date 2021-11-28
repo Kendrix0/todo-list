@@ -18,54 +18,94 @@ function deleteProject(projects, projectContainer) {
     projectsDisplay.removeChild(projectContainer);
 }
 
-function displayTasks(project) {
+function displayTasks(project, single) {
     let displayContent = document.createElement('div');
     displayContent.classList.add('content');
     for (let j = 0; j < project.tasks.length; j++) {
+        let task = project.tasks[j];
         let taskItem = document.createElement('div');
         let taskField = document.createElement('div');
         let taskCheck = document.createElement('input');
         let taskTitle = document.createElement('label');
         let deleteBtn = document.createElement('button');
 
-        taskField.classList.add('field');
-        taskCheck.classList.add('is-checkradio', 'is-circle');
+        taskField.classList.add();
+        
+        taskCheck.classList.add('is-checkradio', 'is-circle', 'mr-1');
         taskCheck.setAttribute('type', 'checkbox');
-        taskCheck.setAttribute('name', `${project.tasks[j].id}`);
-        taskItem.classList.add('mb-0', 'is-flex', 'is-justify-content-space-between');
+        taskCheck.setAttribute('name', `${task.id}`);
+        
+        taskItem.classList.add('card-header', 'pt-1', 'my-1', 'is-justify-content-space-between');
 
         deleteBtn.classList.add('delete', 'is-small', 'hidden');
-        function toggleBtn() { deleteBtn.classList.toggle('hidden') };
         deleteBtn.onclick = () => { project.removeTask(j), displayContent.removeChild(taskItem), saveLocal()}
+        
+        function toggleBtn() { deleteBtn.classList.toggle('hidden') };
         taskItem.addEventListener('mouseover', toggleBtn);
         taskItem.addEventListener('mouseout', toggleBtn);
-        if (project.tasks[j].completed) {
+        
+        if (task.completed) {
             taskCheck.setAttribute('checked', 'true')
         }
 
         taskCheck.onclick = () => {
-            project.tasks[j].completed = !project.tasks[j].completed;
+            task.completed = !task.completed;
             saveLocal();
-            console.log(project.tasks[j])
+            console.log(task)
         }
 
-        taskTitle.setAttribute('for', `${project.tasks[j].id}`);
-        taskTitle.textContent = project.tasks[j].title;
+        taskTitle.setAttribute('for', `${task.id}`);
+        taskTitle.textContent = task.title;
 
         taskField.appendChild(taskCheck);
         taskField.appendChild(taskTitle);
+        
         taskItem.appendChild(taskField);
         taskItem.appendChild(deleteBtn);
+        
         displayContent.appendChild(taskItem);
+        if (single) {
+            let taskDetails = document.createElement('div');
+            let timeEstimate = document.createElement('div');
+            let editTaskBtn = document.createElement('button');
+
+            taskDetails.classList.add('card-content','hidden');
+            taskDetails.textContent = task.desc;
+
+            timeEstimate.classList.add('is-italic');
+            timeEstimate.textContent = `Estimated time: ${task.time} min`;
+            
+            editTaskBtn.classList.add('button', 'is-info', 'is-outlined', 'is-light');
+            editTaskBtn.textContent = 'Edit Task';
+            editTaskBtn.onclick = () => {
+                createTaskModal(task.title, task.desc, task.time, 'edit');
+            }
+
+            taskDetails.appendChild(timeEstimate);
+            taskDetails.appendChild(editTaskBtn);
+            displayContent.appendChild(taskDetails);
+            taskItem.classList.add('hover');
+            taskItem.onclick = () => {
+                taskDetails.classList.toggle('hidden');
+            }
+        }
     }
     return displayContent;
+}
+
+function createTaskModal(title = '', desc = '', time = '', mode) {
+
+}
+
+function createEditProjectModal() {
+
 }
 
 function createDisplay(projects, single) {
     let projectContainer = document.createElement('div');
     let contentContainer = document.createElement('div');
     let displayTitle = document.createElement('p');
-    let projectTasks = displayTasks(projects);
+    let projectTasks = displayTasks(projects, single);
     let deleteProjectBtn = document.createElement('button');
     let addTaskBtn = document.createElement('button');
     let editProjectBtn = document.createElement('button');

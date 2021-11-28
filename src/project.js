@@ -1,8 +1,6 @@
 import Task from './task';
 import { saveLocal, projectList, categoryList } from './storage';
 import { displayMultipleProjects } from './display';
-import Library from './library';
-import Categories from './categories';
 
 const modal = document.querySelector('.modal');
 const projectFormTitle = document.querySelector('#projectFormTitle');

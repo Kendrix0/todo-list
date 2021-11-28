@@ -1,9 +1,8 @@
 import './style.css';
 import { saveLocal, loadLocal, projectList, categoryList } from './storage';
-import { displayedProject, focusOneProject, displayMultipleProjects } from './display';
+import { displayMultipleProjects } from './display';
 import { loadSideNav, toggleCategoryInput } from './sidebar';
-import {Project, toggleProjectForm, submitProjectForm, clearProjectForm} from './project';
-import Task from './task';
+import { toggleProjectForm, submitProjectForm, clearProjectForm} from './project';
 
 const viewAllBtn = document.querySelector('#viewAllBtn');
 const createProjectBtn = document.querySelector('#createProjectBtn');
@@ -14,14 +13,6 @@ const submitCategoryBtn = document.querySelector('#submitCategoryBtn');
 const cancelCategoryBtn = document.querySelector('#cancelCategoryBtn');
 const submitFormBtn = document.querySelector('#submitProjectForm');
 const cancelFormBtn = document.querySelector('#cancelProjectForm');
-
-function createAddTaskModal() {
-
-}
-
-function createEditProjectModal() {
-
-}
 
 function renderSite() {
     loadLocal();
