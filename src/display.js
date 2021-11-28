@@ -78,7 +78,7 @@ function displayTasks(project, single) {
             editTaskBtn.classList.add('button', 'is-info', 'is-outlined', 'is-light');
             editTaskBtn.textContent = 'Edit Task';
             editTaskBtn.onclick = () => {
-                createTaskModal(task.title, task.desc, task.time, 'edit');
+                createTaskModal(true, task);
             }
 
             taskDetails.appendChild(timeEstimate);
@@ -93,8 +93,114 @@ function displayTasks(project, single) {
     return displayContent;
 }
 
-function createTaskModal(title = '', desc = '', time = '', mode) {
+function createTaskModal(edit, item) {
+    let body = document.querySelector('body');
+    let modal = document.createElement('div');
+    let modalBackground = document.createElement('div');
+    let modalContent = document.createElement('div');
+    let modalBox = document.createElement('div');
+    let titleField = document.createElement('div');
+    let titleLabel = document.createElement('label');
+    let titleControl = document.createElement('div');
+    let titleInput = document.createElement('input');
+    let descField = document.createElement('div');
+    let descLabel = document.createElement('label');
+    let descControl = document.createElement('div');
+    let descInput = document.createElement('input');
+    let timeField = document.createElement('div');
+    let timeLabel = document.createElement('label');
+    let timeControl = document.createElement('div');
+    let timeInput = document.createElement('input');
+    let btnField = document.createElement('div');
+    let submitBtn = document.createElement('button');
+    let submitBtnControl = document.createElement('div');
+    let cancelBtn = document.createElement('button');
+    let cancelBtnControl = document.createElement('div');
+    let closeBtn = document.createElement('button');
 
+    modal.classList.add('modal', 'is-active');
+    modalBackground.classList.add('modal-background');
+    modalContent.classList.add('modal-content');
+    modalBox.classList.add('box');
+    titleField.classList.add('field');
+    titleLabel.classList.add('label');
+    titleLabel.textContent = 'Title';
+    titleControl.classList.add('control');
+    titleInput.classList.add('input');
+    titleInput.setAttribute('type','text');
+    titleInput.setAttribute('placeholder','Title');
+    titleInput.setAttribute('id','taskModalTitle');
+    descField.classList.add('field');
+    descLabel.classList.add('label');
+    descLabel.textContent = 'Description';
+    descControl.classList.add('control');
+    descInput.classList.add('input');
+    descInput.setAttribute('type','textarea');
+    descInput.setAttribute('placeholder','Description');
+    timeField.classList.add('field');
+    timeLabel.classList.add('label');
+    timeLabel.textContent = 'Time to complete';
+    timeControl.classList.add('control');
+    timeInput.classList.add('input');
+    timeInput.setAttribute('type','number');
+    timeInput.setAttribute('min', '0');
+    btnField.classList.add('field', 'is-grouped');
+    submitBtn.classList.add('button','is-link');
+    submitBtn.textContent = 'Submit';
+    submitBtnControl.classList.add('control');
+    cancelBtn.classList.add('button','is-link', 'is-light');
+    cancelBtn.textContent = 'Cancel';
+    cancelBtnControl.classList.add('control');
+    closeBtn.classList.add('modal-close', 'is-large');
+
+    if (edit) {
+        titleInput.value = item.title;
+        descInput.value = item.desc;
+        timeInput.value = item.time;
+        submitBtn.onclick = () => {
+            displayedProject[0].time -= parseInt(item.time);
+            item.title = titleInput.value;
+            item.desc = descInput.value;
+            item.time = timeInput.value || 0;
+            displayedProject[0].time += parseInt(item.time);
+            saveLocal();
+            focusOneProject(displayedProject[0]);
+            body.removeChild(modal);
+        }
+    } else {
+        submitBtn.onclick = () => {
+            item.addTask(titleInput.value, descInput.value, timeInput.value);
+            saveLocal();
+            displayMultipleProjects(projectList.projects);
+            body.removeChild(modal);
+        }
+    }
+
+    cancelBtn.onclick = () => body.removeChild(modal);
+    closeBtn.onclick = () => body.removeChild(modal);
+
+    titleControl.appendChild(titleInput);
+    titleField.appendChild(titleLabel);
+    titleField.appendChild(titleControl);
+    descControl.appendChild(descInput);
+    descField.appendChild(descLabel);
+    descField.appendChild(descControl);
+    timeControl.appendChild(timeInput);
+    timeField.appendChild(timeLabel);
+    timeField.appendChild(timeControl);
+    submitBtnControl.appendChild(submitBtn);
+    cancelBtnControl.appendChild(cancelBtn);
+    btnField.appendChild(submitBtnControl);
+    btnField.appendChild(cancelBtnControl);
+    modalBox.appendChild(titleField);
+    modalBox.appendChild(descField);
+    modalBox.appendChild(timeField);
+    modalBox.appendChild(btnField);
+    modalContent.appendChild(modalBox);
+    modal.appendChild(modalBackground);
+    modal.appendChild(modalContent);
+    modal.appendChild(closeBtn);
+    body.appendChild(modal)
 }
 
 function createEditProjectModal() {
@@ -105,6 +211,7 @@ function createDisplay(projects, single) {
     let projectContainer = document.createElement('div');
     let contentContainer = document.createElement('div');
     let displayTitle = document.createElement('p');
+    let displayTime = document.createElement('p');
     let projectTasks = displayTasks(projects, single);
     let deleteProjectBtn = document.createElement('button');
     let addTaskBtn = document.createElement('button');
@@ -114,6 +221,7 @@ function createDisplay(projects, single) {
     projectContainer.classList.add('box', 'notification', `is-${projects.color}`, 'is-vertical');
     contentContainer.classList.add('content');
     displayTitle.classList.add('title');
+    displayTime.classList.add('subtitle');
     addTaskBtn.classList.add('button', 'is-primary', 'is-outlined', 'is-light');
     editProjectBtn.classList.add('button', 'is-info', 'is-outlined', 'is-light');
     deleteProjectBtn.classList.add('delete');
@@ -126,16 +234,19 @@ function createDisplay(projects, single) {
 
     displayTitle.textContent = projects.title;
     displayTitle.onclick = () => {
-        focusOneProject(projects)
+        focusOneProject(projects);
     }
+
+    displayTime.textContent = `Est. time: ${projects.time} min`;
 
     contentContainer.appendChild(displayTitle);
 
     addTaskBtn.textContent = 'Add Task';
     addTaskBtn.onclick = () => {
-
+        createTaskModal(false, projects)
     }
     editProjectBtn.textContent = 'Edit';
+    
     if (single) {
         projectContainer.classList.add('tile');
         projectContainer.id = "largeDisplay"
@@ -145,7 +256,7 @@ function createDisplay(projects, single) {
         if (projects.categories.length > 0) {
             displayCategories.textContent = `Categories: ${projects.categories}`
         } else {
-            displayCategories.textContent = ''
+            displayCategories.textContent = '';
         }
 
         let displayDesc = document.createElement('p');
@@ -163,6 +274,7 @@ function createDisplay(projects, single) {
         displayTitle.classList.add('projectTitle');
     }
 
+    contentContainer.appendChild(displayTime);
     contentContainer.appendChild(projectTasks);
     bottomBtnContainer.appendChild(addTaskBtn);
     bottomBtnContainer.appendChild(editProjectBtn);
