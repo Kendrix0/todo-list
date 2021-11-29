@@ -46,4 +46,4 @@ submitFormBtn.onclick = () => { submitProjectForm(), loadSideNav() };
 renderSite();
 
 // Implement dates and form validation
-// Work on tasks (creating tasks from project page, expanding tasks in project page for more detail(also button to edit))
+// Work on project edit form

@@ -16,11 +16,16 @@ body {
     overflow: auto;
 }
 
+#sidebarContainer {
+    height: 65vh;
+    overflow: auto;
+}
+
 #sideNav {
     height: 100%;
     width: auto;
     overflow-y: auto;
-    overflow-x: hidden;
+    margin-top: 2rem;
 }
 
 .sticky {

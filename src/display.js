@@ -1,6 +1,7 @@
 import { saveLocal } from "./storage";
 import { loadSideNav } from "./sidebar";
 import { projectList } from "./storage";
+import { formatCategories } from "./project";
 
 const projectsDisplay = document.querySelector('#projectsDisplay');
 
@@ -30,20 +31,20 @@ function displayTasks(project, single) {
         let deleteBtn = document.createElement('button');
 
         taskField.classList.add();
-        
+
         taskCheck.classList.add('is-checkradio', 'is-circle', 'mr-1');
         taskCheck.setAttribute('type', 'checkbox');
         taskCheck.setAttribute('name', `${task.id}`);
-        
+
         taskItem.classList.add('card-header', 'pt-1', 'my-1', 'is-justify-content-space-between');
 
         deleteBtn.classList.add('delete', 'is-small', 'hidden');
-        deleteBtn.onclick = () => { project.removeTask(j), displayContent.removeChild(taskItem), saveLocal()}
-        
+        deleteBtn.onclick = () => { project.removeTask(j), displayContent.removeChild(taskItem), saveLocal() }
+
         function toggleBtn() { deleteBtn.classList.toggle('hidden') };
         taskItem.addEventListener('mouseover', toggleBtn);
         taskItem.addEventListener('mouseout', toggleBtn);
-        
+
         if (task.completed) {
             taskCheck.setAttribute('checked', 'true')
         }
@@ -59,22 +60,22 @@ function displayTasks(project, single) {
 
         taskField.appendChild(taskCheck);
         taskField.appendChild(taskTitle);
-        
+
         taskItem.appendChild(taskField);
         taskItem.appendChild(deleteBtn);
-        
+
         displayContent.appendChild(taskItem);
         if (single) {
             let taskDetails = document.createElement('div');
             let timeEstimate = document.createElement('div');
             let editTaskBtn = document.createElement('button');
 
-            taskDetails.classList.add('card-content','hidden');
+            taskDetails.classList.add('card-content', 'hidden');
             taskDetails.textContent = task.desc;
 
             timeEstimate.classList.add('is-italic');
             timeEstimate.textContent = `Estimated time: ${task.time} min`;
-            
+
             editTaskBtn.classList.add('button', 'is-info', 'is-outlined', 'is-light');
             editTaskBtn.textContent = 'Edit Task';
             editTaskBtn.onclick = () => {
@@ -87,6 +88,16 @@ function displayTasks(project, single) {
             taskItem.classList.add('hover');
             taskItem.onclick = () => {
                 taskDetails.classList.toggle('hidden');
+            }
+        }
+        deleteBtn.onclick = () => { 
+            project.removeTask(j);
+            saveLocal();
+            if (single) {
+                displayContent.removeChild(taskItem);
+                displayContent.removeChild(taskDetails);
+            } else {
+                displayMultipleProjects(projectList.projects);
             }
         }
     }
@@ -106,7 +117,7 @@ function createTaskModal(edit, item) {
     let descField = document.createElement('div');
     let descLabel = document.createElement('label');
     let descControl = document.createElement('div');
-    let descInput = document.createElement('input');
+    let descInput = document.createElement('textarea');
     let timeField = document.createElement('div');
     let timeLabel = document.createElement('label');
     let timeControl = document.createElement('div');
@@ -127,28 +138,26 @@ function createTaskModal(edit, item) {
     titleLabel.textContent = 'Title';
     titleControl.classList.add('control');
     titleInput.classList.add('input');
-    titleInput.setAttribute('type','text');
-    titleInput.setAttribute('placeholder','Title');
-    titleInput.setAttribute('id','taskModalTitle');
+    titleInput.setAttribute('type', 'text');
+    titleInput.setAttribute('placeholder', 'Title');
     descField.classList.add('field');
     descLabel.classList.add('label');
     descLabel.textContent = 'Description';
     descControl.classList.add('control');
-    descInput.classList.add('input');
-    descInput.setAttribute('type','textarea');
-    descInput.setAttribute('placeholder','Description');
+    descInput.classList.add('textarea');
+    descInput.setAttribute('placeholder', 'Description');
     timeField.classList.add('field');
     timeLabel.classList.add('label');
     timeLabel.textContent = 'Time to complete';
     timeControl.classList.add('control');
     timeInput.classList.add('input');
-    timeInput.setAttribute('type','number');
+    timeInput.setAttribute('type', 'number');
     timeInput.setAttribute('min', '0');
     btnField.classList.add('field', 'is-grouped');
-    submitBtn.classList.add('button','is-link');
+    submitBtn.classList.add('button', 'is-link');
     submitBtn.textContent = 'Submit';
     submitBtnControl.classList.add('control');
-    cancelBtn.classList.add('button','is-link', 'is-light');
+    cancelBtn.classList.add('button', 'is-link', 'is-light');
     cancelBtn.textContent = 'Cancel';
     cancelBtnControl.classList.add('control');
     closeBtn.classList.add('modal-close', 'is-large');
@@ -156,12 +165,12 @@ function createTaskModal(edit, item) {
     if (edit) {
         titleInput.value = item.title;
         descInput.value = item.desc;
-        timeInput.value = item.time;
+        timeInput.value = parseInt(item.time);
         submitBtn.onclick = () => {
             displayedProject[0].time -= parseInt(item.time);
             item.title = titleInput.value;
             item.desc = descInput.value;
-            item.time = timeInput.value || 0;
+            item.time = parseInt(timeInput.value) || 0;
             displayedProject[0].time += parseInt(item.time);
             saveLocal();
             focusOneProject(displayedProject[0]);
@@ -169,7 +178,7 @@ function createTaskModal(edit, item) {
         }
     } else {
         submitBtn.onclick = () => {
-            item.addTask(titleInput.value, descInput.value, timeInput.value);
+            item.addTask(titleInput.value, descInput.value, parseInt(timeInput.value));
             saveLocal();
             displayMultipleProjects(projectList.projects);
             body.removeChild(modal);
@@ -203,8 +212,168 @@ function createTaskModal(edit, item) {
     body.appendChild(modal)
 }
 
-function createEditProjectModal() {
+function createEditProjectModal(project, single) {
+    let body = document.querySelector('body');
 
+    let modal = document.createElement('div');
+    let modalBackground = document.createElement('div');
+    let modalContent = document.createElement('div');
+    let modalBox = document.createElement('div');
+
+    let titleField = document.createElement('div');
+    let titleLabel = document.createElement('label');
+    let titleControl = document.createElement('div');
+    let titleInput = document.createElement('input');
+
+    let descField = document.createElement('div');
+    let descLabel = document.createElement('label');
+    let descControl = document.createElement('div');
+    let descInput = document.createElement('textarea');
+
+    let columnField = document.createElement('div');
+
+    let colorColumn = document.createElement('div');
+    let colorField = document.createElement('div');
+    let colorLabel = document.createElement('label');
+    let colorControl = document.createElement('div');
+    let colorSelectContainer = document.createElement('div');
+    let colorSelect = document.createElement('select');
+    let colorWhite = document.createElement('option');
+    let colorDark = document.createElement('option');
+    let colorBlue = document.createElement('option');
+    let colorGreen = document.createElement('option');
+    let colorYellow = document.createElement('option');
+    let colorRed = document.createElement('option');
+
+    let categoryColumn = document.createElement('div');
+    let categoryField = document.createElement('div');
+    let categoryLabel = document.createElement('label');
+    let categoryControl = document.createElement('div');
+    let categoryInput = document.createElement('input')
+
+    let btnField = document.createElement('div');
+
+    let submitBtn = document.createElement('button');
+    let submitBtnControl = document.createElement('div');
+
+    let cancelBtn = document.createElement('button');
+    let cancelBtnControl = document.createElement('div');
+
+    let closeBtn = document.createElement('button');
+
+    modal.classList.add('modal', 'is-active');
+    modalBackground.classList.add('modal-background');
+    modalContent.classList.add('modal-content');
+    modalBox.classList.add('box');
+
+    titleField.classList.add('field');
+    titleLabel.classList.add('label');
+    titleLabel.textContent = 'Title';
+    titleControl.classList.add('control');
+    titleInput.classList.add('input');
+    titleInput.setAttribute('type', 'text');
+    titleInput.setAttribute('placeholder', 'Title');
+    titleInput.value = project.title;
+
+    descField.classList.add('field');
+    descLabel.classList.add('label');
+    descLabel.textContent = 'Description';
+    descControl.classList.add('control');
+    descInput.classList.add('textarea');
+    descInput.setAttribute('placeholder', 'Description');
+    descInput.value = project.desc;
+
+    columnField.classList.add('columns');
+    let colors = ['White','Dark','Blue','Green','Yellow','Red'];
+    let colorValues = ['white','dark','info','primary','warning','danger'];
+    let colorOptions = [colorWhite, colorDark, colorBlue, colorGreen, colorYellow, colorRed];
+    colorColumn.classList.add('column', 'is-3');
+    colorField.classList.add('field');
+    colorLabel.classList.add('label');
+    colorLabel.innerHTML = 'Color <span class="subtitle is-6">(Optional)</span>';
+    colorControl.classList.add('control');
+    colorSelectContainer.classList.add('select');
+    for (let i = 0; i < 6; i++) {
+        colorOptions[i].textContent = colors[i];
+        colorOptions[i].setAttribute('value', colorValues[i]);
+    }
+    colorSelect.value = project.color;
+
+    categoryColumn.classList.add('column', 'is-8');
+    categoryField.classList.add('field');
+    categoryLabel.classList.add('label');
+    categoryLabel.innerHTML = 'Categories <span class="subtitle is-6">(Optional, separated by space)</span>'
+    categoryControl.classList.add('control');
+    categoryInput.classList.add('input');
+    categoryInput.setAttribute('type','text');
+    categoryInput.setAttribute('placeholder','Categories');
+    categoryInput.value = project.categories.join(' ');
+    
+    btnField.classList.add('field', 'is-grouped');
+
+    submitBtn.classList.add('button', 'is-link');
+    submitBtn.textContent = 'Submit';
+    submitBtnControl.classList.add('control');
+    submitBtn.onclick = () => {
+        project.title = titleInput.value;
+        project.desc = descInput.value;
+        project.color = colorSelect.value;
+        project.categories = formatCategories(categoryInput);
+        loadSideNav();
+        saveLocal();
+        body.removeChild(modal);
+        if (single) {
+            focusOneProject(project);
+        } else {
+            displayMultipleProjects(projectList.projects);
+        }
+    }
+
+    cancelBtn.classList.add('button', 'is-link', 'is-light');
+    cancelBtn.textContent = 'Cancel';
+    cancelBtnControl.classList.add('control');
+
+    closeBtn.classList.add('modal-close', 'is-large');
+
+    cancelBtn.onclick = () => body.removeChild(modal);
+    closeBtn.onclick = () => body.removeChild(modal);
+
+    titleControl.appendChild(titleInput);
+    titleField.appendChild(titleLabel);
+    titleField.appendChild(titleControl);
+    descControl.appendChild(descInput);
+    descField.appendChild(descLabel);
+    descField.appendChild(descControl);
+    for (let i = 0; i < 6; i++) {
+        colorSelect.appendChild(colorOptions[i]);
+        if (colorValues[i] == project.color) {
+            colorOptions[i].setAttribute('selected','selected');
+        }
+    };
+    colorSelectContainer.appendChild(colorSelect);
+    colorControl.appendChild(colorSelectContainer);
+    colorField.appendChild(colorLabel);
+    colorField.appendChild(colorControl);
+    colorColumn.appendChild(colorField);
+    columnField.appendChild(colorColumn);
+    categoryControl.appendChild(categoryInput);
+    categoryField.appendChild(categoryLabel);
+    categoryField.appendChild(categoryInput);
+    categoryColumn.appendChild(categoryField);
+    columnField.appendChild(categoryColumn);
+    submitBtnControl.appendChild(submitBtn);
+    cancelBtnControl.appendChild(cancelBtn);
+    btnField.appendChild(submitBtnControl);
+    btnField.appendChild(cancelBtnControl);
+    modalBox.appendChild(titleField);
+    modalBox.appendChild(descField);
+    modalBox.appendChild(columnField);
+    modalBox.appendChild(btnField);
+    modalContent.appendChild(modalBox);
+    modal.appendChild(modalBackground);
+    modal.appendChild(modalContent);
+    modal.appendChild(closeBtn);
+    body.appendChild(modal)
 }
 
 function createDisplay(projects, single) {
@@ -218,7 +387,7 @@ function createDisplay(projects, single) {
     let editProjectBtn = document.createElement('button');
     let bottomBtnContainer = document.createElement('div');
 
-    projectContainer.classList.add('box', 'notification', `is-${projects.color}`, 'is-vertical');
+    projectContainer.classList.add('box', 'notification', `is-${projects.color}`, 'is-vertical','pb-1');
     contentContainer.classList.add('content');
     displayTitle.classList.add('title');
     displayTime.classList.add('subtitle');
@@ -246,7 +415,9 @@ function createDisplay(projects, single) {
         createTaskModal(false, projects)
     }
     editProjectBtn.textContent = 'Edit';
-    
+    editProjectBtn.onclick = () => {
+        createEditProjectModal(projects, single);
+    }
     if (single) {
         projectContainer.classList.add('tile');
         projectContainer.id = "largeDisplay"
@@ -254,7 +425,7 @@ function createDisplay(projects, single) {
 
         displayCategories.classList.add('subtitle');
         if (projects.categories.length > 0) {
-            displayCategories.textContent = `Categories: ${projects.categories}`
+            displayCategories.textContent = `Categories: ${projects.categories.join(', ')}`
         } else {
             displayCategories.textContent = '';
         }

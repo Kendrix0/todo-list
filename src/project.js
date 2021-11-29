@@ -8,7 +8,7 @@ const projectFormDesc = document.querySelector('#projectFormDesc');
 const projectFormColor = document.querySelector('#projectFormColor');
 const projectFormCategories = document.querySelector('#projectFormCategories');
 
-function formatCategories(categories) {
+export function formatCategories(categories) {
     let filteredCategories = []
     let splitValues = categories.value.split(' ');
     for (let i = 0; i < splitValues.length; i++) {
@@ -27,7 +27,7 @@ export function clearProjectForm() {
 }
 
 export function toggleProjectForm() {
-    modal.classList.toggle('is-active')
+    modal.classList.toggle('is-active');
 }
 
 export function submitProjectForm() {
