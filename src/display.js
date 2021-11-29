@@ -2,6 +2,7 @@ import { saveLocal } from "./storage";
 import { loadSideNav } from "./sidebar";
 import { projectList } from "./storage";
 import { formatCategories } from "./project";
+import { categoryList } from "./storage";
 
 const projectsDisplay = document.querySelector('#projectsDisplay');
 
@@ -27,6 +28,7 @@ function displayTasks(project, single) {
         let taskItem = document.createElement('div');
         let taskField = document.createElement('div');
         let taskCheck = document.createElement('input');
+        let taskDetails = document.createElement('div');
         let taskTitle = document.createElement('label');
         let deleteBtn = document.createElement('button');
 
@@ -66,7 +68,6 @@ function displayTasks(project, single) {
 
         displayContent.appendChild(taskItem);
         if (single) {
-            let taskDetails = document.createElement('div');
             let timeEstimate = document.createElement('div');
             let editTaskBtn = document.createElement('button');
 
@@ -94,8 +95,7 @@ function displayTasks(project, single) {
             project.removeTask(j);
             saveLocal();
             if (single) {
-                displayContent.removeChild(taskItem);
-                displayContent.removeChild(taskDetails);
+                focusOneProject(project);
             } else {
                 displayMultipleProjects(projectList.projects);
             }
@@ -318,7 +318,11 @@ function createEditProjectModal(project, single) {
         project.title = titleInput.value;
         project.desc = descInput.value;
         project.color = colorSelect.value;
-        project.categories = formatCategories(categoryInput);
+        let formatted = formatCategories(categoryInput);
+        project.categories = formatted;
+        for (let i = 0; i < formatted.length; i++) {
+            categoryList.addCategory(formatted[i]);
+        }
         loadSideNav();
         saveLocal();
         body.removeChild(modal);

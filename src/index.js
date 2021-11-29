@@ -47,3 +47,4 @@ renderSite();
 
 // Implement dates and form validation
 // Work on project edit form
+// Submit task, load correct display
