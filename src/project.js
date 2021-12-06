@@ -1,12 +1,14 @@
 import Task from './task';
 import { saveLocal, projectList, categoryList } from './storage';
 import { displayMultipleProjects } from './display';
+import * as dayjs from 'dayjs';
 
 const modal = document.querySelector('.modal');
 const projectFormTitle = document.querySelector('#projectFormTitle');
 const projectFormDesc = document.querySelector('#projectFormDesc');
 const projectFormColor = document.querySelector('#projectFormColor');
 const projectFormCategories = document.querySelector('#projectFormCategories');
+const projectFormDate = document.querySelector('#projectFormDate');
 
 export function formatCategories(categories) {
     let filteredCategories = []
@@ -31,18 +33,20 @@ export function toggleProjectForm() {
 }
 
 export function submitProjectForm() {
-    projectList.createProject(projectFormTitle.value, projectFormDesc.value, projectFormColor.value, formatCategories(projectFormCategories));
+/*     projectList.createProject(projectFormTitle.value, projectFormDesc.value, projectFormColor.value, formatCategories(projectFormCategories), projectFormDate.value);
     displayMultipleProjects(projectList.projects);
     clearProjectForm();
-    toggleProjectForm();
+    toggleProjectForm(); */
+    console.log(projectFormDate.value)
 }
 
 export default class Project {
-    constructor(title, desc, color, categories, time, completed, tasks) {
+    constructor(title, desc, color, categories, date, time, completed, tasks) {
         this.title = title;
         this.desc = desc;
         this.color = color;
         this.time = time;
+        this.date = date;
         this.completed = completed;
         this.tasks = tasks;
         this.categories = categories;
@@ -63,11 +67,6 @@ export default class Project {
         this.time -= this.tasks[priority].time;
         this.tasks.splice(priority, 1);
         saveLocal();
-    }
-
-    getTimeEstimate() {
-
-        return this.time;
     }
 
     completeProject() {

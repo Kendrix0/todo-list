@@ -12,12 +12,12 @@ body {
 }
 
 #displayContainer {
-    height: 65vh;
+    height: 75vh;
     overflow: auto;
 }
 
 #sidebarContainer {
-    height: 65vh;
+    height: 75vh;
     overflow: auto;
 }
 
@@ -46,8 +46,8 @@ body {
 #smallDisplay {
     min-width: 15rem;
     min-height: 18rem;
-    width: 25%;
-    height: 35%;
+    width: 22.5%;
+    max-height: 35%;
     padding-bottom: 0px;
     padding-right: 5px;
 }
@@ -94,6 +94,15 @@ body {
 .card-content {
     padding: 0.4rem;
     border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+.footer {
+    padding: 2rem 1.5rem 2rem;
+    border-top: 1px solid rgba(169, 169, 169, 0.5);
+}
+
+.hero.is-small .hero-body {
+    padding: 0.5rem 1.5rem 0.5rem
 }
 
 @import "~@creativebulma/bulma-divider";

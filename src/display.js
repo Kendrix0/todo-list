@@ -3,6 +3,7 @@ import { loadSideNav } from "./sidebar";
 import { projectList } from "./storage";
 import { formatCategories } from "./project";
 import { categoryList } from "./storage";
+import * as dayjs from 'dayjs';
 
 const projectsDisplay = document.querySelector('#projectsDisplay');
 

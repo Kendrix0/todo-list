@@ -1,6 +1,7 @@
 import { focusOneProject, displayMultipleProjects } from "./display";
 import { categoryList, projectList } from "./storage";
 import { displayedProject } from "./display";
+import * as dayjs from 'dayjs';
 
 const categoryInput = document.querySelector('#categoryInput');
 const categoryInputField = document.querySelector('#inputField');
