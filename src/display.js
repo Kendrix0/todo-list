@@ -123,6 +123,7 @@ function createTaskModal(edit, item, single) {
     let timeLabel = document.createElement('label');
     let timeControl = document.createElement('div');
     let timeInput = document.createElement('input');
+    let timeValidation = document.createElement('p');
     let btnField = document.createElement('div');
     let submitBtn = document.createElement('button');
     let submitBtnControl = document.createElement('div');
@@ -154,6 +155,8 @@ function createTaskModal(edit, item, single) {
     timeInput.classList.add('input');
     timeInput.setAttribute('type', 'number');
     timeInput.setAttribute('min', '0');
+    timeValidation.textContent = 'Time must be a number!';
+    timeValidation.classList.add('help', 'is-danger', 'hidden');
     btnField.classList.add('field', 'is-grouped');
     submitBtn.classList.add('button', 'is-link');
     submitBtn.textContent = 'Submit';
@@ -168,25 +171,35 @@ function createTaskModal(edit, item, single) {
         descInput.value = item.desc;
         timeInput.value = parseInt(item.time);
         submitBtn.onclick = () => {
-            displayedProject[0].time -= parseInt(item.time);
-            item.title = titleInput.value;
-            item.desc = descInput.value;
-            item.time = parseInt(timeInput.value) || 0;
-            displayedProject[0].time += parseInt(item.time);
-            saveLocal();
-            focusOneProject(displayedProject[0]);
-            body.removeChild(modal);
+            if (parseInt(timeInput.value) == 0 || parseInt(timeInput.value) > 0) {
+                displayedProject[0].time -= parseInt(item.time);
+                item.title = titleInput.value;
+                item.desc = descInput.value;
+                item.time = parseInt(timeInput.value) || 0;
+                displayedProject[0].time += parseInt(item.time);
+                saveLocal();
+                focusOneProject(displayedProject[0]);
+                body.removeChild(modal);
+            } else {
+                timeInput.classList.add('is-danger');
+                timeValidation.classList.remove('hidden');
+            }
         }
     } else {
         submitBtn.onclick = () => {
-            item.addTask(titleInput.value, descInput.value, parseInt(timeInput.value));
-            saveLocal();
-            if (single) {
-                focusOneProject(item);
+            if (parseInt(timeInput.value) == 0 || parseInt(timeInput.value) > 0) {
+                item.addTask(titleInput.value, descInput.value, parseInt(timeInput.value));
+                saveLocal();
+                if (single) {
+                    focusOneProject(item);
+                } else {
+                    displayMultipleProjects(projectList.projects);
+                }
+                body.removeChild(modal);
             } else {
-                displayMultipleProjects(projectList.projects);
+                timeInput.classList.add('is-danger');
+                timeValidation.classList.remove('hidden');
             }
-            body.removeChild(modal);
         }
     }
 
@@ -202,6 +215,7 @@ function createTaskModal(edit, item, single) {
     timeControl.appendChild(timeInput);
     timeField.appendChild(timeLabel);
     timeField.appendChild(timeControl);
+    timeField.appendChild(timeValidation);
     submitBtnControl.appendChild(submitBtn);
     cancelBtnControl.appendChild(cancelBtn);
     btnField.appendChild(submitBtnControl);

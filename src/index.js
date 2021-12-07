@@ -47,6 +47,7 @@ cancelFormBtn.onclick = () => { clearProjectForm(); toggleProjectForm() };
 submitFormBtn.onclick = () => { submitProjectForm(), loadSideNav() };
 
 renderSite();
-
+console.log(dayjs().day(-1))
+console.log(dayjs().day(7))
 // Implement form validation
 // Submit task, load correct display
