@@ -33,11 +33,10 @@ export function toggleProjectForm() {
 }
 
 export function submitProjectForm() {
-/*     projectList.createProject(projectFormTitle.value, projectFormDesc.value, projectFormColor.value, formatCategories(projectFormCategories), projectFormDate.value);
+    projectList.createProject(projectFormTitle.value, projectFormDesc.value, projectFormColor.value, formatCategories(projectFormCategories), projectFormDate.value);
     displayMultipleProjects(projectList.projects);
     clearProjectForm();
-    toggleProjectForm(); */
-    console.log(projectFormDate.value)
+    toggleProjectForm();
 }
 
 export default class Project {

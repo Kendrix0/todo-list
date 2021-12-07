@@ -87,7 +87,7 @@ body {
 
 .card-header {
     box-shadow: none;
-    border-top: 1px solid rgba(128, 128, 128, 0.25);
+    border-top: 1px solid rgba(150, 150, 150, 0.5);
     border-radius: 0;
 }
 
@@ -103,6 +103,20 @@ body {
 
 .hero.is-small .hero-body {
     padding: 0.5rem 1.5rem 0.5rem
+}
+
+.content p.subtitle {
+    margin-bottom: 0;
+}
+
+.lateProject {
+    border: 5px solid rgb(255, 45, 45);
+    text-shadow: 2px 2px 4px rgb(125, 115, 115);
+}
+
+.dueProject {
+    border: 5px solid rgb(255, 206, 45);
+    text-shadow: 2px 2px 4px rgb(125, 115, 115);
 }
 
 @import "~@creativebulma/bulma-divider";

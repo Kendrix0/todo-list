@@ -47,8 +47,6 @@ cancelFormBtn.onclick = () => { clearProjectForm(); toggleProjectForm() };
 submitFormBtn.onclick = () => { submitProjectForm(), loadSideNav() };
 
 renderSite();
-console.log(today.isBefore('2021-12-07')) //YYYY-MM-DD;
-console.log(today.isBefore(today.day(6)))
-// Implement dates and form validation
-// Work on project edit form
+
+// Implement form validation
 // Submit task, load correct display

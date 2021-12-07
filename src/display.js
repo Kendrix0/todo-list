@@ -81,7 +81,7 @@ function displayTasks(project, single) {
             editTaskBtn.classList.add('button', 'is-info', 'is-outlined', 'is-light');
             editTaskBtn.textContent = 'Edit Task';
             editTaskBtn.onclick = () => {
-                createTaskModal(true, task);
+                createTaskModal(true, task, single);
             }
 
             taskDetails.appendChild(timeEstimate);
@@ -105,7 +105,7 @@ function displayTasks(project, single) {
     return displayContent;
 }
 
-function createTaskModal(edit, item) {
+function createTaskModal(edit, item, single) {
     let body = document.querySelector('body');
     let modal = document.createElement('div');
     let modalBackground = document.createElement('div');
@@ -181,7 +181,11 @@ function createTaskModal(edit, item) {
         submitBtn.onclick = () => {
             item.addTask(titleInput.value, descInput.value, parseInt(timeInput.value));
             saveLocal();
-            displayMultipleProjects(projectList.projects);
+            if (single) {
+                focusOneProject(item);
+            } else {
+                displayMultipleProjects(projectList.projects);
+            }
             body.removeChild(modal);
         }
     }
@@ -231,6 +235,11 @@ function createEditProjectModal(project, single) {
     let descControl = document.createElement('div');
     let descInput = document.createElement('textarea');
 
+    let dateField = document.createElement('div');
+    let dateLabel = document.createElement('label');
+    let dateControl = document.createElement('div');
+    let dateInput = document.createElement('input');
+    
     let columnField = document.createElement('div');
 
     let colorColumn = document.createElement('div');
@@ -284,6 +293,14 @@ function createEditProjectModal(project, single) {
     descInput.setAttribute('placeholder', 'Description');
     descInput.value = project.desc;
 
+    dateField.classList.add('field');
+    dateLabel.classList.add('label');
+    dateLabel.textContent = 'Due date';
+    dateControl.classList.add('control');
+    dateInput.classList.add('input');
+    dateInput.setAttribute('type', 'date');
+    dateInput.value = project.date;
+
     columnField.classList.add('columns');
     let colors = ['White','Dark','Blue','Green','Yellow','Red'];
     let colorValues = ['white','dark','info','primary','warning','danger'];
@@ -318,6 +335,7 @@ function createEditProjectModal(project, single) {
     submitBtn.onclick = () => {
         project.title = titleInput.value;
         project.desc = descInput.value;
+        project.date = dateInput.value;
         project.color = colorSelect.value;
         let formatted = formatCategories(categoryInput);
         project.categories = formatted;
@@ -349,6 +367,9 @@ function createEditProjectModal(project, single) {
     descControl.appendChild(descInput);
     descField.appendChild(descLabel);
     descField.appendChild(descControl);
+    dateControl.appendChild(dateInput);
+    dateField.appendChild(dateLabel);
+    dateField.appendChild(dateControl);
     for (let i = 0; i < 6; i++) {
         colorSelect.appendChild(colorOptions[i]);
         if (colorValues[i] == project.color) {
@@ -372,6 +393,7 @@ function createEditProjectModal(project, single) {
     btnField.appendChild(cancelBtnControl);
     modalBox.appendChild(titleField);
     modalBox.appendChild(descField);
+    modalBox.appendChild(dateField);
     modalBox.appendChild(columnField);
     modalBox.appendChild(btnField);
     modalContent.appendChild(modalBox);
@@ -386,6 +408,7 @@ function createDisplay(projects, single) {
     let contentContainer = document.createElement('div');
     let displayTitle = document.createElement('p');
     let displayTime = document.createElement('p');
+    let displayDate = document.createElement('p');
     let projectTasks = displayTasks(projects, single);
     let deleteProjectBtn = document.createElement('button');
     let addTaskBtn = document.createElement('button');
@@ -411,13 +434,29 @@ function createDisplay(projects, single) {
         focusOneProject(projects);
     }
 
+    displayDate.classList.add('dateDisplay');
+    if (projects.date == '') {
+        displayDate.textContent = 'Due date: none';
+    } else if (dayjs().isAfter(projects.date) && dayjs().format('MMM DD YYYY') == dayjs(projects.date).format('MMM DD YYYY')) {
+        displayDate.innerHTML = `Due date: ${dayjs(projects.date).format('MMM DD YYYY')} <br><strong>DUE TODAY!</strong>`;
+        displayDate.classList.add('is-italic');
+        projectContainer.classList.add('dueProject');
+    } else if (dayjs().isAfter(projects.date)) {
+        displayDate.innerHTML = `Due date: ${dayjs(projects.date).format('MMM DD YYYY')} <br><strong>PAST DUE!</strong>`;
+        displayDate.classList.add('is-italic');
+        projectContainer.classList.add('lateProject');
+    } else {
+        displayDate.textContent = `Due date: ${dayjs(projects.date).format('MMM DD YYYY')}`;
+    }
+    displayDate.style.marginBottom = '0px';
+
     displayTime.textContent = `Est. time: ${projects.time} min`;
 
     contentContainer.appendChild(displayTitle);
 
     addTaskBtn.textContent = 'Add Task';
     addTaskBtn.onclick = () => {
-        createTaskModal(false, projects)
+        createTaskModal(false, projects, single)
     }
     editProjectBtn.textContent = 'Edit';
     editProjectBtn.onclick = () => {
@@ -451,6 +490,7 @@ function createDisplay(projects, single) {
     }
 
     contentContainer.appendChild(displayTime);
+    contentContainer.appendChild(displayDate);
     contentContainer.appendChild(projectTasks);
     bottomBtnContainer.appendChild(addTaskBtn);
     bottomBtnContainer.appendChild(editProjectBtn);
